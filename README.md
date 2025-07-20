@@ -2,7 +2,7 @@
 
 A terminal-based tool to easily switch your system DNS servers on Linux.
 
-[![asciicast](https://asciinema.org/a/dHmcB60l8ec2gk7uyN4YMHUvU.svg)](https://asciinema.org/a/dHmcB60l8ec2gk7uyN4YMHUvU)
+[![asciicast](https://asciinema.org/a/6EEEOJTXowPgoVF66jbegzvZ1.svg)](https://asciinema.org/a/6EEEOJTXowPgoVF66jbegzvZ1)
 
 ## Features
 - Interactive terminal UI for selecting DNS providers
