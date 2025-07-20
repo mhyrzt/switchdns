@@ -2,6 +2,8 @@
 
 A terminal-based tool to easily switch your system DNS servers on Linux.
 
+[![asciicast](https://asciinema.org/a/dHmcB60l8ec2gk7uyN4YMHUvU.svg)](https://asciinema.org/a/dHmcB60l8ec2gk7uyN4YMHUvU)
+
 ## Features
 - Interactive terminal UI for selecting DNS providers
 - Built-in list of popular DNS providers (Cloudflare, Google, Quad9, OpenDNS, CleanBrowsing, Shecan, Electro, Begzar)
