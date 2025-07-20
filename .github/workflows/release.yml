@@ -4,6 +4,7 @@ on:
   push:
     tags:
       - 'v*'  # Matches v0.1.0, v1.0.0, etc.
+  workflow_dispatch:
 
 permissions:
   contents: write
