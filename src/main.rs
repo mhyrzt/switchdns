@@ -9,8 +9,10 @@ use std::process::{Command, exit};
 fn main() -> anyhow::Result<()> {
     // Ensure running as root
     if !is_root::is_root() {
-        let args: Vec<String> = env::args().collect();
+        let exe = env::current_exe().expect("Failed to get current executable");
+        let args: Vec<String> = env::args().skip(1).collect(); // skip program name
         let status = Command::new("sudo")
+            .arg(exe)
             .args(&args)
             .status()
             .expect("Failed to execute sudo. Is it installed?");
