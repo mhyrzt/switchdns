@@ -1,20 +1,21 @@
-//! DNS logic module for switchdns
-
 use std::{
-    fs::File,
-    io::{BufRead, BufReader, Write},
-    net::IpAddr,
-    str::FromStr,
+    env, fs::File, io::{BufRead, BufReader, Write}, net::IpAddr, path::PathBuf, str::FromStr
 };
 
-/// Represents a DNS provider option.
+use users::get_user_by_name;
+
+#[cfg(unix)]
+use users::os::unix::UserExt;
+
+const CONFIG_FILE_NAME: &str = ".switchdns";
+
+
 #[derive(Debug, Clone)]
 pub struct DnsOption {
     pub name: String,
     pub servers: Vec<String>,
 }
 
-/// Returns a list of built-in DNS provider options.
 pub fn builtin_dns_options() -> Vec<DnsOption> {
     vec![
         DnsOption {
@@ -56,13 +57,24 @@ pub fn builtin_dns_options() -> Vec<DnsOption> {
     ]
 }
 
-const CONFIG_FILE_NAME: &str = ".dns-switcher";
+fn get_user_aware_home_dir() -> Option<PathBuf> {
+    if let Ok(sudo_user_name) = env::var("SUDO_USER") {
+        if let Some(user) = get_user_by_name(&sudo_user_name) {
+            return Some(user.home_dir().to_path_buf());
+        }
+    }
+    dirs::home_dir()
+}
 
-/// Reads extra DNS options from the user's config file.
 pub fn read_extra_dns_options() -> Vec<DnsOption> {
-    let path = dirs::home_dir()
+    let path = get_user_aware_home_dir()
         .map(|p| p.join(CONFIG_FILE_NAME))
-        .filter(|p| p.exists());
+        .filter(|p| {
+            println!("{:?}", p);
+            p.exists()
+        });
+
+    println!("{:?}", path);
 
     let file = match path {
         Some(ref p) => match File::open(p) {
@@ -87,7 +99,6 @@ pub fn read_extra_dns_options() -> Vec<DnsOption> {
         .collect()
 }
 
-/// Returns all DNS options (built-in and user-defined).
 pub fn all_dns_options() -> Vec<DnsOption> {
     builtin_dns_options()
         .into_iter()
@@ -95,7 +106,6 @@ pub fn all_dns_options() -> Vec<DnsOption> {
         .collect()
 }
 
-/// Reads the current DNS servers from /etc/resolv.conf.
 pub fn current_dns_servers() -> String {
     let content = std::fs::read_to_string("/etc/resolv.conf").unwrap_or_default();
     let servers: Vec<String> = content
@@ -116,7 +126,6 @@ pub fn current_dns_servers() -> String {
     }
 }
 
-/// Writes the selected DNS option to /etc/resolv.conf.
 pub fn write_resolv_conf(dns_option: &DnsOption) -> bool {
     let mut content = String::new();
 

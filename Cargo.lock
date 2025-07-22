@@ -600,6 +600,7 @@ dependencies = [
  "is-root",
  "ratatui",
  "thiserror",
+ "users",
 ]
 
 [[package]]

@@ -1,6 +1,4 @@
-//! UI logic module for switchdns
-
-use crate::dns::{DnsOption, all_dns_options, current_dns_servers, write_resolv_conf};
+use crate::dns::{all_dns_options, current_dns_servers, write_resolv_conf, DnsOption};
 use crossterm::{
     cursor::{Hide, Show},
     event::{self, Event as CEvent, KeyCode},
@@ -8,9 +6,9 @@ use crossterm::{
     terminal::{disable_raw_mode, enable_raw_mode},
 };
 use ratatui::{
-    TerminalOptions, Viewport,
     prelude::*,
     widgets::{Block, Borders, List, ListItem, ListState, Paragraph},
+    TerminalOptions, Viewport,
 };
 use std::{
     io::{self},
@@ -19,7 +17,6 @@ use std::{
 
 const INLINE_HEIGHT: u16 = 20;
 
-/// Runs the main UI event loop.
 pub fn run_ui() -> anyhow::Result<()> {
     let dns_list = all_dns_options();
     let mut msg: Option<String> = None;
@@ -87,7 +84,6 @@ pub fn run_ui() -> anyhow::Result<()> {
     Ok(())
 }
 
-/// Draws the UI for the DNS switcher.
 fn draw_ui<B: Backend>(
     terminal: &mut Terminal<B>,
     dns_list: &[DnsOption],
@@ -109,7 +105,6 @@ fn draw_ui<B: Backend>(
             ])
             .split(area);
 
-        // Current DNS info
         let current_block = Block::default()
             .title("Current DNS")
             .borders(Borders::ALL)
@@ -120,7 +115,6 @@ fn draw_ui<B: Backend>(
             .style(Style::default().fg(Color::White));
         f.render_widget(current_text, chunks[0]);
 
-        // DNS options list
         let items: Vec<ListItem> = dns_list
             .iter()
             .map(|d| {
@@ -157,7 +151,6 @@ fn draw_ui<B: Backend>(
             .highlight_symbol(">> ");
         f.render_stateful_widget(list, chunks[1], state);
 
-        // Status message (if present)
         if let Some(m) = msg {
             let status_block = Block::default()
                 .title("Status")
