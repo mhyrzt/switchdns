@@ -5,6 +5,7 @@ A terminal-based tool to easily switch your system DNS servers on Linux.
 [![asciicast](https://asciinema.org/a/6EEEOJTXowPgoVF66jbegzvZ1.svg)](https://asciinema.org/a/6EEEOJTXowPgoVF66jbegzvZ1)
 
 ## Features
+
 - Interactive terminal UI for selecting DNS providers
 - Built-in list of popular DNS providers (Cloudflare, Google, Quad9, OpenDNS, CleanBrowsing, Shecan, Electro, Begzar)
 - Option to reset to automatic/ISP DNS
@@ -46,14 +47,15 @@ switchdns
 
 ## Custom DNS Providers
 
-You can add your own DNS providers by creating a file named `.dns-switcher` in your home directory. Each line should be in the format:
+You can add your own DNS providers by creating a file named `.switchdns` in your home directory. Each line should be in the format:
 
-```
+```text
 Provider Name | 1.2.3.4 | 5.6.7.8
 ```
 
 Example:
-```
+
+```text
 MyDNS | 123.45.67.89 | 98.76.54.32
 ```
 

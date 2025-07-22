@@ -3,7 +3,7 @@ name: Release switchdns
 on:
   push:
     tags:
-      - 'v*'  # Matches v0.1.0, v1.0.0, etc.
+      - "v*"
   workflow_dispatch:
 
 permissions:
@@ -11,24 +11,8 @@ permissions:
 
 jobs:
   build:
-    name: Build Binaries
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        include:
-          - os: ubuntu-latest
-            target: x86_64-unknown-linux-gnu
-            bin: switchdns
-            ext: ""
-          - os: macos-latest
-            target: x86_64-apple-darwin
-            bin: switchdns
-            ext: ""
-          - os: windows-latest
-            target: x86_64-pc-windows-msvc
-            bin: switchdns.exe
-            ext: ".exe"
-
+    name: Build Linux Binary
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
@@ -36,21 +20,21 @@ jobs:
         uses: actions-rs/toolchain@v1
         with:
           toolchain: stable
-          target: ${{ matrix.target }}
+          target: x86_64-unknown-linux-gnu
 
       - name: Build release binary
-        run: cargo build --release --target ${{ matrix.target }}
+        run: cargo build --release --target x86_64-unknown-linux-gnu
 
       - name: Prepare binary for upload
         shell: bash
         run: |
           mkdir dist
-          cp target/${{ matrix.target }}/release/${{ matrix.bin }} dist/switchdns-${{ matrix.target }}${{ matrix.ext }}
+          cp target/x86_64-unknown-linux-gnu/release/switchdns dist/switchdns-x86_64-unknown-linux-gnu
 
       - uses: actions/upload-artifact@v4
         with:
-          name: switchdns-${{ matrix.target }}${{ matrix.ext }}
-          path: dist/switchdns-${{ matrix.target }}${{ matrix.ext }}
+          name: switchdns-x86_64-unknown-linux-gnu
+          path: dist/switchdns-x86_64-unknown-linux-gnu
 
   release:
     needs: build
@@ -58,12 +42,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Download all artifacts
+      - name: Download artifact
         uses: actions/download-artifact@v4
         with:
           path: dist
 
-      - name: Gather all binaries
+      - name: Gather binaries
         run: |
           mkdir upload
           find dist -type f -exec cp {} upload/ \;
